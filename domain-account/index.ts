@@ -12,7 +12,7 @@ const trustedAccountIds = [
   "616138583583", // pulumi-dev-sandbox
 ];
 
-// Create the IAM Role with the trust policy
+
 const assumeRolePolicy = {
   Version: "2012-10-17",
   Statement: trustedAccountIds.map(accountId => ({
@@ -21,6 +21,14 @@ const assumeRolePolicy = {
       AWS: `arn:aws:iam::${accountId}:root`,
     },
     Action: "sts:AssumeRole",
+    Condition: {
+      ArnLike: {
+        "aws:PrincipalArn": [
+          `arn:aws:iam::${accountId}:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_AdministratorAccess_*`,
+          `arn:aws:iam::${accountId}:role/aws-reserved/sso.amazonaws.com/AWSReservedSSO_AdministratorAccess_*`
+        ]
+      }
+    }
   })),
 };
 
@@ -34,11 +42,22 @@ const policyDocument = {
     {
       Effect: "Allow",
       Action: [
+        "route53:GetHostedZone",
         "route53:ChangeResourceRecordSets",
         "route53:GetChange",
         "route53:ListResourceRecordSets",
       ],
       Resource: `arn:aws:route53:::hostedzone/${hostedZoneId}`,
+    },
+    // It may be possible to make this permission less broad. This appears to be
+    // necessary so that the AWS provider only returns after the records have
+    // actually been created:
+    {
+      Effect: "Allow",
+      Action: [
+        "route53:GetChange",
+      ],
+      Resource: `*`,
     },
   ],
 };
@@ -48,5 +67,4 @@ new aws.iam.RolePolicy("delegationRolePolicy", {
   policy: JSON.stringify(policyDocument),
 });
 
-// Export the role ARN
 export const roleArn = role.arn;
