@@ -2,14 +2,16 @@ import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
 
 const stackRef = new pulumi.StackReference("domain-account", {
-  name: `${pulumi.getOrganization()}/domain-account/dev`
+  name: `${pulumi.getOrganization()}/subdomain-account/dev`
 });
 
 const subdomainFqdn = stackRef.getOutput("subdomainFqdn") as pulumi.Output<string>;
-const websiteDomain = pulumi.interpolate`www.${subdomainFqdn}`;
+
+const websiteSubDomain = "www";
+const websiteFqdn = pulumi.interpolate`${websiteSubDomain}.${subdomainFqdn}`;
 
 const bucket = new aws.s3.Bucket("public-website", {
-  bucket: websiteDomain,
+  bucket: websiteFqdn,
   website: {
     indexDocument: "index.html"
   }
@@ -53,8 +55,13 @@ const hostedZone = aws.route53.getZoneOutput({
 
 new aws.route53.Record("bucket-dns", {
   zoneId: hostedZone.zoneId,
-  name: websiteDomain,
-  type: "NS",
+  name: websiteSubDomain,
+  type: "A",
+  aliases: [{
+    name: bucket.websiteEndpoint,
+    zoneId: bucket.hostedZoneId,
+    evaluateTargetHealth: true
+  }]
 });
 
-export const url = pulumi.interpolate`http://${websiteDomain}`;
+export const url = pulumi.interpolate`http://${websiteFqdn}`;
