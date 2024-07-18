@@ -3,21 +3,11 @@ import * as aws from "@pulumi/aws";
 
 const config = new pulumi.Config();
 export const subdomainFqdn = config.require("subdomainFqdn");
-
-const stackRef = new pulumi.StackReference("domain-account", {
-  name: `${pulumi.getOrganization()}/domain-account/dev`
-});
-
-const parentHostedZoneId = stackRef.getOutput("hostedZoneId") as pulumi.Output<string>;
-const roleArn = stackRef.getOutput("roleArn") as pulumi.Output<string>;
-
-const myCurrentRole = aws.getCallerIdentityOutput();
+export const parentZoneRoleArn = config.require("parentZoneRoleArn");
 
 const subdomain = new aws.route53.Zone("subdomain", {
   name: subdomainFqdn,
-  tags: {
-    owner: "josh@pulumi.com"
-  }
+  forceDestroy: true,
 });
 
 const parentZoneProvider = new aws.Provider("parent-zone-account", {
@@ -26,14 +16,23 @@ const parentZoneProvider = new aws.Provider("parent-zone-account", {
   // using in the default provider.
   profile: aws.config.profile,
   assumeRole: {
-    roleArn: roleArn
+    roleArn: parentZoneRoleArn
   }
 });
 
+const subdomainParts = subdomainFqdn.split(".");
+export const parentDomain = subdomainParts.slice(1, subdomainParts.length).join(".");
+
+const parentZone = aws.route53.getZoneOutput({
+  name: parentDomain
+}, { provider: parentZoneProvider });
+
 new aws.route53.Record("subdomain-ns-records", {
-  zoneId: parentHostedZoneId,
+  zoneId: parentZone.zoneId,
   name: subdomainFqdn,
   type: "NS",
   ttl: 300,
   records: subdomain.nameServers,
 }, { provider: parentZoneProvider });
+
+export const nameServers = subdomain.nameServers;

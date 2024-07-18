@@ -1,0 +1,3 @@
+domain-account/Pulumi.*.yaml
+subdomain-account/Pulumi.*.yaml
+subdomain-account-workload/Pulumi.*.yaml
