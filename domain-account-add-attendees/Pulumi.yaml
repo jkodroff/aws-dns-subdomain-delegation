@@ -1,4 +1,4 @@
-name: subdomain-account-workload
+name: domain-account-add-attendees
 runtime:
   name: nodejs
   options:
