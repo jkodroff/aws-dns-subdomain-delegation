@@ -2,10 +2,8 @@
 
 Pulumi program for delegating subdomains for a hosted zone in Route 53:
 
-- `domain-account-role` creates a role that be assumed by a number of accounts to add the necessary records to delegate a subdomain:
-  - The config value `hostedZoneId` must be set to the hosted zone ID for `example.com`.
 - `subdomain-account` contains the code to be run in AWS accounts that wish to have a delegated subdomain, e.g. `foo.example.com`:
-- `subdomain-account-workload` contains a simple S3 static site configured to be at the `www.` sub-subdomain of the delegated subdomain, e.g. `www.foo.example.com`:
+- `domain-account-add-attendee` contains a simple S3 static site configured to be at the `www.` sub-subdomain of the delegated subdomain, e.g. `www.foo.example.com`:
   - This stack is presumed to execute in the same Pulumi order as `subdomain-account`.
 
 ## Instructions for Delegating a Subdomain
