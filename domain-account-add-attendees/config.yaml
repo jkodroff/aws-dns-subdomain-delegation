@@ -1,10 +1,17 @@
-- fqdn: joshtest.pulumi-workshops.com
+# - fqdn: joshtest.pulumi-workshops.com
+#   nsRecords:
+#     - ns-1160.awsdns-17.org
+#     - ns-1558.awsdns-02.co.uk
+#     - ns-490.awsdns-61.com
+#     - ns-971.awsdns-57.net
+- fqdn: rwhitear.pulumi-workshops.com
   nsRecords:
-    - ns-1160.awsdns-17.org
-    - ns-1558.awsdns-02.co.uk
-    - ns-490.awsdns-61.com
-    - ns-971.awsdns-57.net
+    - ns-1002.awsdns-61.net
+    - ns-413.awsdns-51.com
+    - ns-1393.awsdns-46.org
+    - ns-1745.awsdns-26.co.uk
 - fqdn: andy.pulumi-workshops.com
+  nsRecords:
     - ns-1696.awsdns-20.co.uk
     - ns-1173.awsdns-18.org
     - ns-463.awsdns-57.com
@@ -15,3 +22,9 @@
     - ns-1806.awsdns-33.co.uk
     - ns-174.awsdns-21.com
     - ns-731.awsdns-27.net
+- fqdn: mvishnub.pulumi-workshops.com
+  nsRecords:
+    - ns-56.awsdns-07.com
+    - ns-966.awsdns-56.net
+    - ns-2015.awsdns-59.co.uk
+    - ns-1038.awsdns-01.org

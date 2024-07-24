@@ -12,8 +12,9 @@ const data = yaml.load(fileContents) as ConfigData[];
 
 data.forEach(config => {
   const subdomainParts = config.fqdn.split(".");
-  const parentDomain = subdomainParts.slice(1, subdomainParts.length).join(".");
 
+  const parentDomain = subdomainParts.slice(1, subdomainParts.length).join(".");
+  
   const parentZone = aws.route53.getZoneOutput({
     name: parentDomain
   });
