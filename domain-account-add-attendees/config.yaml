@@ -1,6 +1,6 @@
-- fqdn: joshtest.pulumi-workshops.com
+- fqdn: rwhitear.pulumi-workshops.com
   nsRecords:
-    - ns-1160.awsdns-17.org
-    - ns-1558.awsdns-02.co.uk
-    - ns-490.awsdns-61.com
-    - ns-971.awsdns-57.net
+    - ns-1002.awsdns-61.net
+    - ns-413.awsdns-51.com
+    - ns-1393.awsdns-46.org
+    - ns-1745.awsdns-26.co.uk
